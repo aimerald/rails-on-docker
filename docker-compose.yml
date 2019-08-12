@@ -1,0 +1,27 @@
+version: '3'
+
+volumes:
+  mysql: {}
+
+services:
+  db:
+    image: mysql
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: app
+    ports:
+      - '3306'
+    volumes:
+      - mysql:/var/lib/mysql
+  muscle:
+    image: app
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: mysql2://root:pass@db/app
+    volumes:
+      - .:/app
+    depends_on:
+      - db
